@@ -1,0 +1,4 @@
+cron:
+- description: update feed items
+  url: /_update
+  schedule: every 12 hours
