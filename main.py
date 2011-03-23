@@ -67,10 +67,6 @@ class Feeder(webapp.RequestHandler):
         soup = BeautifulSoup(content)
         current_item = soup.find('ul', { "class" : "newsItem" })
         stories = FeedItem.all()
-        current_story = stories.filter('url =', current_item.find('a')["href"]).get()
-        if not current_story:
-            feed_item = FeedItem(url="http://online.wsj.com" + current_item.findAll('div')[3].find('a')["href"], title=str(current_item.find('h1').find('a').string.strip()), description=str(current_item.find('p').string))
-            feed_item.put()
         previous_items = soup.findAll('li', { "class" : "ahed_listitem" })
         for item in previous_items:
             stories = FeedItem.all()
@@ -78,6 +74,10 @@ class Feeder(webapp.RequestHandler):
             if not story:
                 feed_item = FeedItem(url=item.find('a')["href"], title=str(item.find('h2').find('a').string.strip()), description=str(item.find('p').string))
                 feed_item.put()
+        current_story = stories.filter('url =', current_item.find('a')["href"]).get()
+        if not current_story:
+            feed_item = FeedItem(url="http://online.wsj.com" + current_item.findAll('div')[3].find('a')["href"], title=str(current_item.find('h1').find('a').string.strip()), description=str(current_item.find('p').string))
+            feed_item.put()        
         self.redirect('/')
             
         
